@@ -35,7 +35,7 @@ pipeline {
         sh '''
           echo "Installing Docker CLI inside the agent container..."
           # Update package lists
-          apt update -y
+          #apt update -y
           # Install necessary packages for Docker CLI (apt-transport-https, ca-certificates, curl, gnupg, lsb-release)
           apt install -y apt-transport-https ca-certificates curl gnupg lsb-release
 
