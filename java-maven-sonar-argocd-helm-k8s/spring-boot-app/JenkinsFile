@@ -29,6 +29,34 @@ pipeline {
         }
       }
     }
+
+    stage('Install Docker Client on Agent') {
+      steps {
+        sh '''
+          echo "Installing Docker CLI inside the agent container..."
+          # Update package lists
+          apt-get update -y
+          # Install necessary packages for Docker CLI (apt-transport-https, ca-certificates, curl, gnupg, lsb-release)
+          apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
+
+          # Add Docker's official GPG key
+          curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+          # Set up the stable Docker repository for Debian (as maven:3-openjdk-17 is Debian-based)
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+          # Update apt again to include Docker packages from the new repo
+          apt-get update -y
+
+          # Install Docker CLI (client only)
+          apt-get install -y docker-ce-cli
+
+          # Clean up apt cache to reduce container size during this temporary installation
+          rm -rf /var/lib/apt/lists/*
+          echo "Docker CLI installed."
+        '''
+      }
+    }
     stage('Build and Push Docker Image') {
       environment {
         DOCKER_IMAGE = "vanityvj13/ultimate-cicd:${BUILD_NUMBER}"
