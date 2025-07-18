@@ -1,8 +1,14 @@
 pipeline {
   agent {
     docker {
-      image 'vanityvj13/my-java-build-tools'
-      args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
+      image 'docker:stable-dind'
+      image 'maven:3-openjdk-17'
+      args '''
+                -v ~/.m2:/root/.m2
+                -v /var/run/docker.sock:/var/run/docker.sock
+            '''
+      //image 'vanityvj13/my-java-build-tools'
+      //args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
     }
   }
   stages {
