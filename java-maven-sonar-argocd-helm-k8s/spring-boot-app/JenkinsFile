@@ -2,7 +2,7 @@ pipeline {
   agent {
     docker {
      image 'vanityvj13/my-java-build-tools:3-openjdk-17'
-     args '--user vijay -v /var/run/docker.sock:/var/run/docker.sock' 
+     args '--user jenkins -v /var/run/docker.sock:/var/run/docker.sock' 
     }
   }
   stages {
